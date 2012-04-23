@@ -1,0 +1,28 @@
+{
+	"name": "valid",
+	"version": "0.0.1",
+	"description": "JS data validator",
+	"keywords": ["validation", "json", "js"],
+	"author": {
+		"name": "Dmitry Smolin",
+		"email": "dimsmol@gmail.com"
+	},
+	"preferGlobal": false,
+	"private": false,
+	"engines": {
+		"node": "~0.6.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dimsmol/valid"
+	},
+	"directories": {
+		"lib": "./lib",
+		"bin": "./bin",
+		"doc": "./doc"
+	},
+	"main": "./lib/index",
+	"bin": {
+		"test": "./bin/test"
+	}
+}
