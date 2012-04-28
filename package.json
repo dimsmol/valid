@@ -1,6 +1,6 @@
 {
 	"name": "valid",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "JS data validator",
 	"keywords": ["validation", "json", "js"],
 	"author": {
