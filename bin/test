@@ -24,12 +24,12 @@ var spec = validators.spec;
 var warn = validators.warn;
 
 var dataSpec = spec({
-	a: v(num, warn(val(1)), range(0, 7)),
+	a: v(num, warn(1), range(0, 7)),
 	x: opt(str),
 	y: {},
 	f: intNum,
 	q: v([intNum], len(5, 5)),
-	l: { '*': key(val('az')) },
+	l: { '*': key('az') },
 	zz: dict(v(intNum, range(0)), [str]),
 	'*': keyMatch(rx(/^d$/))
 });

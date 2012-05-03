@@ -129,6 +129,14 @@ Error or warning properties:
 * onlyIf(caseValidator, validator) = iif(caseValidator, validator, opt(isNull))
 * t(validator) = prop('_type', validator)
 
+## corrections
+
+Values of several types are replaced to corresponding validators automatically if found within validators tree:
+
+* JS dictionary value => obj(value, options), options will be got from value by key '~' (if present) and value under key '*' will be transferred to options
+* [validator] => arr(validator), validator is optional
+* string, number or NaN value => val(value)
+
 ## transforming
 
 Transforming is an attempt to deserialize desired type from string value on type validation. In this case type validator reports that value is valid and replaces initial string value with deserialized one for sequential validators.
