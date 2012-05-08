@@ -44,7 +44,7 @@ var data = {
 	}
 };
 
-var result = validate(data, spec, {stopOnFirstError: false, needMessage: true});
+var result = validate(data, spec, {stopOnFirstError: false, errors: {needMessage: true}});
 console.log(result);
 ```
 
@@ -54,11 +54,14 @@ console.log(result);
 
 ### options
 
-* debug - perform validation in debug mode, false by default
+* isDebug - perform validation in debug mode, false by default
 * stopOnFirstError - wether to collect all errors or stop on first one, true by default
-* needValidator - include failed validator into error object or not, false by default
-* needValidatorInfo - include validator internal info into error object or not, false by default
-* needMessage - include validator generated message into error object or not, false by default
+* errors:
+	* needValidator - include failed validator into error object or not, false by default
+	* needValidatorInfo - include validator internal info into error object or not, false by default
+	* needMessage - include validator generated message into error object or not, false by default
+* warnings:
+	* the same subitems as for "errors"
 
 ### return value properties
 

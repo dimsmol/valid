@@ -53,7 +53,7 @@ var data = {
 };
 //spec = num;
 //data = "1";
-var result = validate(data, dataSpec, {stopOnFirstError: false, needMessage: true});
+var result = validate(data, dataSpec, {stopOnFirstError: false, errors: {needMessage: true}, warnings: {needMessage: true}});
 
 
 console.log(result);
