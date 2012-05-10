@@ -54,7 +54,7 @@ console.log(result);
 
 ### options
 
-* isDebug - perform validation in debug mode, false by default
+* debug - perform validation in debug mode, false by default
 * stopOnFirstError - wether to collect all errors or stop on first one, true by default
 * errors:
 	* needValidator - include failed validator into error object or not, false by default
