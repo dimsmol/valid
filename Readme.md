@@ -131,6 +131,7 @@ Error or warning properties:
 * optIf(caseValidator, validator) = iif(caseValidator, opt(validator), validator)
 * onlyIf(caseValidator, validator) = iif(caseValidator, validator, opt(isNull))
 * t(validator) = prop('_type', validator)
+* fields(dict) = v([new OneOf(arr)], range(0, arr.length)) where arr is array of keys of dict
 
 ## corrections
 
