@@ -20,7 +20,7 @@ var validate = valid.validate;
 var validators = valid.validators;
 var v = validators.v;
 var num = validators.num;
-var intnum = validators.intnum;
+var intNum = validators.intNum;
 var range = validators.range;
 var opt = validators.opt;
 var oneOf = validators.oneOf;
@@ -28,7 +28,7 @@ var any = validators.any;
 
 var dataSpec = spec({ // expecting object
 	a: v(num, range(0, 17)), // must be a number between 0 and 17
-	b: opt(intnum), // must be an integer
+	b: opt(intNum), // must be an integer
 	c: { // also object
 		x: oneOf(1, 'hello'), // strictly one of these values
 		'*': any // any other keys with any values are allowed for c
