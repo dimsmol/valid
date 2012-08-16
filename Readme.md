@@ -1,4 +1,4 @@
-## valid
+# valid
 
 * Includes bunch of validators that can be combined
 * Designed to validate web service input data (loaded from JSON) and return values
@@ -18,6 +18,7 @@ Use one of predefined validators to perform data checks or write your own by sub
 var valid = require('valid');
 var validate = valid.validate;
 var validators = valid.validators;
+var spec = validators.spec;
 var v = validators.v;
 var num = validators.num;
 var intNum = validators.intNum;
@@ -26,14 +27,14 @@ var opt = validators.opt;
 var oneOf = validators.oneOf;
 var any = validators.any;
 
-var dataSpec = spec({ // expecting object
+var dataSpec = { // expecting object
 	a: v(num, range(0, 17)), // must be a number between 0 and 17
 	b: opt(intNum), // must be an integer
 	c: { // also object
 		x: oneOf(1, 'hello'), // strictly one of these values
 		'*': any // any other keys with any values are allowed for c
 	}
-});
+};
 
 var data = {
 	a: '1', // error - number expected
@@ -44,7 +45,7 @@ var data = {
 	}
 };
 
-var result = validate(data, spec, {stopOnFirstError: false, errors: {needMessage: true}});
+var result = validate(data, spec(dataSpec), {stopOnFirstError: false, errors: {needMessage: true}});
 console.log(result);
 ```
 
@@ -165,3 +166,8 @@ Be careful implementing validators performing flow control.
 For example, and() validator must manually reset transformation when any of validators fails, because transformation could be established by some of previous validators. The same behavior is taken in account in sw() and should be kept in mind when designing your custom validators with flow control.
 
 not(validators...) validator always breaks transformation because if validators are valid, it is invalid itself and must reset transformation.
+
+## tools
+
+* basedOn(srcDict, updateDict) - updates srcDict with values from updateDict. Can be used to "inherit" dataspecs.
+* getFields(dict) - returns keys of dict ignoring having value that is instanceof NoWay. Can be used to obtain fields, provided by dataspec.
