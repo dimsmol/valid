@@ -86,53 +86,82 @@ Error or warning properties:
 
 ## vaidators
 
-* and(validators...) - valid if all specified validators are valid
-* any - always valid
+### primitives
+
+* bool - boolean values
+* date - Date objects
+* num - finite numbers (that aren't NaN and aren't infinity)
+* intNum - finite integers
+* posInt = v(intNum, range(1)) - positive integer
+* idx = v(intNum, range(0)) - nonnegative integer (index)
+* str - string value
+* rx(regexp) - value matching regexp
+
+### range and length
+
+* range(min, max) - value is >= min and <= max, if min or max is null, corresponding boundary check is omitted
+* rangex(min, max) - as range, but not inclusive
+* len(min, max) - as range, but performs check of length of value, for dictionaries len will correctly check number of items
+
+### constants
+
+* oneOf(values...) - value is one of specified (uses strict equality to compare)
+* except(values...) - value is not one of specified (uses strict equality to compare)
+* val(value) - as oneOf, but check against exactly one value
+* isNull - null or undefined
+* notNull - not null or undefined
+
+### objects, dictionaries, arrays
+
+* prop(key, validator) - validates property of current value located under key with validator specified, can be used for both objects and arrays
+* props(keyValidators, opt_options) - validates js object properties, option '*' specifies validator for unknown keys, option strictNotOwn implies check for not-hasOwnProperty properties when is true
+* obj(keyValidators, opt_options) - as props(), but valid for only for Object instances
+* dict(keySpec, valueSpec) = obj({}, {'*': v(key(strMode(keySpec)), valueSpec)})
 * arr(opt_validator) - valid for arrays, ensures each item is valid according to opt_validator (if specified)
-* bool - valid for boolean values
-* date - valid for Date objects
-* dbg - valid in debug mode only
-* except(values...) - valid if value is not one of specified (uses strict equality to compare)
-* hasKey(key) - valid if object has key specified
-* inst(type, opt_typeName) - valid if value is instance of type specified, opt_typeName is used for error message, type.prototype.name will be used if not specified
-* intNum - valid for finite integers
-* is(type, opt_typeName) - as inst, but check that value is directly of the type specified, not inherited from it
-* isNull - valid if value is null or undefined
+* sibl(key, validator) - validates sibling of value under key with validator specified
+* up(validators...) - validates parent of value with validators specified
+* hasKey(key) - valid if object has key
+* fields(dict) = v([new OneOf(arr)], range(0, arr.length)) where arr is array of keys of dict
+
+### keys
+
 * key(validator) - valid if validator is valid for current key
 * keyMatch(validator) - as key, but will produce error message according to validator, when key just says that property is not allowed
-* len(min, max) - as range, but performs check of length of value, for dictionaries len will correctly check number of items
-* ndbg - valid only if not in debug mode
-* notNull - valid if value is not null
-* not(validator) - valid if not valid according to validator specified, hides actual error, designed primarily to be used in conditions (like sw/on), note also it's problems with transforming (see below)
 * noWay - always not valid, produces "property not allowed" error
-* nul(validators...) - (nullable) treats null value as valid before perform checks specified by "validators"
-* num - valid for finite numbers (that aren't NaN and aren't infinity)
-* obj(keyValidators, opt_options) - as props(), but valid for only for Object instances
-* oneOf(values...) - valid if value is one of specified (uses strict equality to compare)
-* opt(validators...) - as nopt, but also treats null (and undefined) values as valid
+
+### types
+
+* inst(type, opt_typeName) - value is instance of type specified, opt_typeName is used for error message, type.prototype.name will be used if not specified
+* is(type, opt_typeName) - as inst, but check that value is directly of the type specified, not inherited from it
+* t(validator) = prop('_type', validator)
+
+### logic
+
+* any - always valid
+* and(validators...) - valid if all specified validators are valid
+* v(validators...) - same as and() but shorter
 * or(validators...) - valid if one of specified validators is valid, use with care because it cannot produce informative error message (use sw when possible)
-* prop(key, validator) - valid if property of current value located under key is valid according to validator specified, can be used for both objects and arrays
-* props(keyValidators, opt_options) - validates js object properties, option '*' specifies validator for unknown keys, option strictNotOwn implies check for not-hasOwnProperty properties when is true
-* range(min, max) - valid if value is >= min and <= max, if min or max is null, corresponding boundary check is omitted
-* rangex(min, max) - as range, but not inclusive
-* rx(regexp) - valid if value matches regexp specified
-* sibl(key, validator) - valid if sibling of value under key specified is valid according to validator specified
-* str - valid if value is string
+* not(validator) - valid if not valid according to validator specified, hides actual error, designed primarily to be used in conditions (like sw/on), note also it's problems with transforming (see below)
+
+### modifiers
+
+* nul(validators...) - (nullable) treats null value as valid before perform checks specified by "validators"
+* opt(validators...) - as nopt, but also treats null (and undefined) values as valid
 * strMode(validators...) - allows attempts to transform value from string to appropriate type, see "transforming" below
-* sw(onClauses...) - chooses one of the "on(matchValidator, validator)" using matchValidator and is valid if chosen onClause validator is valid, behaves like a "switch" clause. Validator can imply key optionality and it will be exposed on sw() itself.
-* up(validators...) - valid if parent of value is valid according to validators specified
-* val(value) - as oneOf, but check against exactly one value
 * warn(validators...) - implies "warning" mode, all validation errors inside of warn will be reported as warnings, warn itself is always valid
 
-## sugar
+### control flow
 
-* spec(validators...) - returns validator itself if only one is provided, else returns and(validators...)
-* dict(keySpec, valueSpec) = obj({}, {'*': v(key(strMode(keySpec)), valueSpec)})
+* sw(onClauses...) - chooses one of the "on(matchValidator, validator)" using matchValidator and is valid if chosen onClause validator is valid, behaves like a "switch" clause. Validator can imply key optionality and it will be exposed on sw() itself.
 * iif(caseValidator, thenValidator, opt_elseValidator) = sw(on(caseValidator, thenValidator), on(any, opt_elseValidator || noWay))
 * optIf(caseValidator, validator) = iif(caseValidator, opt(validator), validator)
 * onlyIf(caseValidator, validator) = iif(caseValidator, validator, opt(isNull))
-* t(validator) = prop('_type', validator)
-* fields(dict) = v([new OneOf(arr)], range(0, arr.length)) where arr is array of keys of dict
+
+### misc
+
+* dbg - valid in debug mode only
+* ndbg - valid only if not in debug mode
+* spec(validators...) - returns validator itself if only one is provided, else returns and(validators...)
 
 ## corrections
 
@@ -140,7 +169,7 @@ Values of several types are replaced to corresponding validators automatically i
 
 * JS dictionary value => obj(value, options), options will be got from value by key '~' (if present) and value under key '*' will be transferred to options
 * [validator] => arr(validator), validator is optional
-* string, number or NaN value => val(value)
+* null, undefined, string, number or NaN value => val(value)
 
 ## transforming
 
