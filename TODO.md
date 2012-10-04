@@ -1,5 +1,9 @@
 * tests!!!
 
+* add:
+	* email
+	* url
+
 * implement in validators
 	* getInfo()
 	* clone(), fromInfo() (?)
