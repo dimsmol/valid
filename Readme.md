@@ -90,6 +90,7 @@ Error or warning properties:
 
 * bool - boolean values
 * date - Date objects
+* dateStr = strTo(date) - Date object or string value transformable to Date, see "transfroming" below
 * num - finite numbers (that aren't NaN and aren't infinity)
 * intNum - finite integers
 * posInt = v(intNum, range(1)) - positive integer
@@ -162,6 +163,8 @@ Error or warning properties:
 * dbg - valid in debug mode only
 * ndbg - valid only if not in debug mode
 * spec(validators...) - returns validator itself if only one is provided, else returns and(validators...)
+* applyTransform - saves transformed value directy to data tree, see "transforming" below
+* strTo(validator) = strMode(validator, applyTransform) - enables strMode() and then applies transfromed value, see "transforming" below
 
 ## corrections
 
@@ -178,7 +181,7 @@ Transforming is an attempt to deserialize desired type from string value on type
 Example:
 
 ```js
-validate('3', strMode(intNum, range(0, 5)));
+validate('3', v(strMode(intNum), range(0, 5)));
 ```
 
 intNum here will cast '3' to number during validation, so range() validator will be able to perform it's check too.
@@ -186,8 +189,10 @@ intNum here will cast '3' to number during validation, so range() validator will
 dict() sugar uses strMode because dictionary keys can be only strings even if they store values that are numeric according to application logic.
 
 Currently following validators support transforming:
+
 * num
 * intNum
+* date
 
 General rule for implementing transforming validators is to reset any transformation performed if value is invalid and to provide transformed value in other case.
 
@@ -195,6 +200,18 @@ Be careful implementing validators performing flow control.
 For example, and() validator must manually reset transformation when any of validators fails, because transformation could be established by some of previous validators. The same behavior is taken in account in sw() and should be kept in mind when designing your custom validators with flow control.
 
 not(validators...) validator always breaks transformation because if validators are valid, it is invalid itself and must reset transformation.
+
+Transforming does not modify source data, but you can use applyTransform validator to do it. applyTransform saves transformed value directly to source data tree.
+
+Note, that if you are validating a primitive, it's transformed value will be available as ctx.value regardless of using applyTransform. strTo() sugar uses strMode() and applyTransform to transform a value and apply transformation to source data.
+
+Example:
+
+```js
+var d = { a: '3' };
+validate(d, { a: strTo(intNum) });
+// d.a now is 3 instead of '3'
+```
 
 ## tools
 
