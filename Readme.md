@@ -160,6 +160,7 @@ Error or warning properties:
 
 ### misc
 
+* wrapper(validator) - works exactly as validator wrapped, for use cases see "recursive constructions" below
 * dbg - valid in debug mode only
 * ndbg - valid only if not in debug mode
 * spec(validators...) - returns validator itself if only one is provided, else returns and(validators...)
@@ -212,6 +213,43 @@ var d = { a: '3' };
 validate(d, { a: strTo(intNum) });
 // d.a now is 3 instead of '3'
 ```
+
+## recursive constructions
+
+It can be tricky to create recursive validator. For example, this naive attempt will fail:
+
+```js
+var recursiveValidator = spec({
+	title: str,
+	items: [recursiveValidator] // will not work correctly
+});
+```
+
+That's because recursiveValidator has undefined value at the moment of calling spec() function. The same problem occurs in the following example:
+
+```js
+var a = { a: a }; // a will be { a: undefined } actually
+```
+
+To resolve the problem, wrapper() can be used:
+
+```js
+var ref = wrapper();
+var recursiveValidator = spec({
+	title: str,
+	items: [ref]
+});
+ref.validator = recursiveValidator; // now recursion will work
+```
+
+Note that wrapper() called without arguments actually creates wrapper for val(undefined) validator, see "corrections" above. Also note, that correction won't be applyed on assigning a value to wrapper's `validator` property, so this will fail:
+
+```js
+var ref = wrapper();
+ref.validator = { a: str }; // dict will not be converted to corresponding validator
+```
+
+You must use validator or call spec() to convert your expression to validator before assignment.
 
 ## tools
 
