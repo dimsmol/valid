@@ -254,4 +254,4 @@ You must use validator or call spec() to convert your expression to validator be
 ## tools
 
 * basedOn(srcDict, updateDict) - updates srcDict with values from updateDict. Can be used to "inherit" dataspecs.
-* getFields(dict) - returns keys of dict ignoring having value that is instanceof NoWay. Can be used to obtain fields, provided by dataspec.
+* getFields(dict) - returns keys of dict ignoring having validator that prohibits corresponding key (NoWay prohibits any key). Can be used to obtain fields, provided by dataspec.
