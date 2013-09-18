@@ -10,7 +10,8 @@
 	"preferGlobal": false,
 	"private": false,
 	"dependencies": {
-		"ops": "~0.0.1"
+		"ops": "~0.0.1",
+		"marked_types": "~0.0.1"
 	},
 	"engines": {
 		"node": ">=0.8.0"
